@@ -1,0 +1,6 @@
+*.zip
+*.npy
+.ipynb_checkpoints/
+resources/.ipynb_checkpoints/
+sd_*/
+__pycache__/
