@@ -1,5 +1,4 @@
 *.zip
-*.npy
 .ipynb_checkpoints/
 resources/.ipynb_checkpoints/
 sd_*/
