@@ -63,7 +63,7 @@ def PrepareGoogleSpeechCmd(forceDownload=False, task='20cmd'):
         raise Exception('Task must be one of: {}'.format(allowedTasks))
 
     basePath = 'sd_GSCmdV2'
-    _DownloadGoogleSpeechCmdV2(forceDownload)
+    # _DownloadGoogleSpeechCmdV2(forceDownload)
 
 
     if task == '12cmd':
@@ -166,10 +166,10 @@ def PrepareGoogleSpeechCmd(forceDownload=False, task='20cmd'):
             'nine': 1}
         numGSCmdV2Categs = 21
 
-    print('Converting test set WAVs to numpy files')
-    audioUtils.WAV2Numpy(basePath + '/test/')
-    print('Converting training set WAVs to numpy files')
-    audioUtils.WAV2Numpy(basePath + '/train/')
+    # print('Converting test set WAVs to numpy files')
+    # audioUtils.WAV2Numpy(basePath + '/test/')
+    # print('Converting training set WAVs to numpy files')
+    # audioUtils.WAV2Numpy(basePath + '/train/')
 
     # read split from files and all files in folders
     testWAVs = pd.read_csv(basePath + '/train/testing_list.txt',
