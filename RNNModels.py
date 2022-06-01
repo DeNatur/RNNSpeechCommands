@@ -52,7 +52,7 @@ def RNNSpeechModel(nCategories, samplingrate=16000, inputLength=16000):
     return model
 
 def my_RNNSpeechModel(nCategories, samplingrate=16000, inputLength=16000):
-    model = Sequential([
+    model = Sequential([ 
         # TODO: Input init
         # In Sequential probably should not be used
         # Layers.InputLayer(input_tensor=Layers.Input((inputLength,)),),
@@ -90,6 +90,24 @@ def my_RNNSpeechModel(nCategories, samplingrate=16000, inputLength=16000):
 
     return model
 
+def my2_SimpleRNNSpeechModel(nCategories, samplingrate=16000, inputLength=16000):
+    model = Sequential()
+    model.add(Layers.Reshape((1, -1)))
+    model.add(Melspectrogram(n_dft=1024, n_hop=128, input_shape=(1, inputLength),
+                padding='same', sr=samplingrate, n_mels=80,
+                fmin=40.0, fmax=samplingrate / 2, power_melgram=1.0,
+                return_decibel_melgram=True, trainable_fb=False,
+                trainable_kernel=False,
+                name='mel_stft'))
+    model.add(Normalization2D(int_axis=0))
+    model.add(Layers.Lambda(lambda q: K.squeeze(q, -1), name='squeeze_last_dim'))
+    model.add(Layers.SimpleRNN(64, return_sequences=True))
+    model.add(Layers.Flatten())
+    model.add(Layers.Dense(64, activation='relu'))
+    model.add(Layers.Dense(32, activation='relu'))
+    model.add(Layers.Dense(nCategories, activation='softmax'))
+    return model
+
 def AttRNNSpeechModel(nCategories, samplingrate=16000,
                       inputLength=16000, rnn_func=Layers.LSTM):
     # simple LSTM
@@ -119,6 +137,7 @@ def AttRNNSpeechModel(nCategories, samplingrate=16000,
 
     x = Layers.Conv2D(10, (5, 1), activation='relu', padding='same')(x)
     x = Layers.BatchNormalization()(x)
+    x = Layers.ReLU()(x)
     x = Layers.Conv2D(1, (5, 1), activation='relu', padding='same')(x)
     x = Layers.BatchNormalization()(x)
 
