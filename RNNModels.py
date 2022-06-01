@@ -108,6 +108,42 @@ def my2_SimpleRNNSpeechModel(nCategories, samplingrate=16000, inputLength=16000)
     model.add(Layers.Dense(nCategories, activation='softmax'))
     return model
 
+def my_SimpleLSTMSpeechModel(nCategories, samplingrate=16000, inputLength=16000):
+    model = Sequential()
+    model.add(Layers.Reshape((1, -1)))
+    model.add(Melspectrogram(n_dft=1024, n_hop=128, input_shape=(1, iLen),
+                padding='same', sr=sr, n_mels=80,
+                fmin=40.0, fmax=sr / 2, power_melgram=1.0,
+                return_decibel_melgram=True, trainable_fb=False,
+                trainable_kernel=False,
+                name='mel_stft'))
+    model.add(Normalization2D(int_axis=0))
+    model.add(Layers.Lambda(lambda q: K.squeeze(q, -1), name='squeeze_last_dim'))
+    model.add(Layers.LSTM(64, return_sequences=True))
+    model.add(Layers.Flatten())
+    model.add(Layers.Dense(64, activation='relu'))
+    model.add(Layers.Dense(32, activation='relu'))
+    model.add(Layers.Dense(nCategs, activation='softmax'))
+    return model
+
+def my_SimpleConvLSTM2DSpeechModel(nCategories, samplingrate=16000, inputLength=16000):
+    model = Sequential()
+    model.add(Layers.Reshape((1, -1)))
+    model.add(Melspectrogram(n_dft=1024, n_hop=128, input_shape=(1, iLen),
+                padding='same', sr=sr, n_mels=80,
+                fmin=40.0, fmax=sr / 2, power_melgram=1.0,
+                return_decibel_melgram=True, trainable_fb=False,
+                trainable_kernel=False,
+                name='mel_stft'))
+    model.add(Normalization2D(int_axis=0))
+    model.add(Layers.Lambda(lambda q: K.squeeze(q, -1), name='squeeze_last_dim'))
+    model.add(Layers.LSTM(64, return_sequences=True))
+    model.add(Layers.Flatten())
+    model.add(Layers.Dense(64, activation='relu'))
+    model.add(Layers.Dense(32, activation='relu'))
+    model.add(Layers.Dense(nCategs, activation='softmax'))
+    return model
+
 def AttRNNSpeechModel(nCategories, samplingrate=16000,
                       inputLength=16000, rnn_func=Layers.LSTM):
     # simple LSTM
